@@ -1,0 +1,10 @@
+<launch>
+	<node pkg="ipc_sensor_msgs" 
+			name="ipc_node_imagesub"
+			type="sensor_msgs_Image_subscriber"
+			output="screen">
+		<remap from="~topic" to="/image"/>
+		<param name="message" value="image" />
+	</node>
+</launch>
+

@@ -1,0 +1,33 @@
+<package>
+	<name>cnas</name>
+	<version>0.0.1</version>
+
+	<description>
+	A stack collecting the custom tools for the 2013-2014 WPI CNAS MQP project
+	</description>
+	<author>Kevin Janesch</author>
+	<author>EJ Murphy</author>
+	<author>Ryan Fawthrop</author>
+	<author>Madeline Burris</author>
+	<author>Quinn Perry</author>
+	<maintainer email="autonomous@wpi.edu">WPI</maintainer>
+	<!--email>autonomous@wpi.edu</email-->
+	<license>BSD</license>
+	<!-- review status="unreviewed" notes=""/-->
+	<!--url>http://ros.org/wiki/ardrone_autonomy</url>
+	<export>
+	<rosdoc config="rosdoc.yaml" />
+	</export-->
+
+	<buildtool_depend>catkin</buildtool_depend>
+
+	<!--rosdep name="libsdl-dev" /-->
+	<run_depend>ipc_bridge</run_depend>
+	<run_depend>image_transport</run_depend>
+	<run_depend>stereo_image_proc</run_depend>
+	<run_depend>camera_calibration</run_depend>
+	<!--depend package="image_view"/>
+
+	<depend package="camera_info_manager"/-->
+</package>
+

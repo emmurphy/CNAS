@@ -1,0 +1,8 @@
+<launch>
+<!-- 
+ardrone_autonomy
+rosrun ardrone_autonomy ardrone_driver _realtime_navdata:=True _navdata_demo:=0
+
+ -->
+
+</launch>

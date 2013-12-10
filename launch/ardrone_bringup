@@ -1,0 +1,8 @@
+<launch>
+<!-- 
+ardrone_autonomy see also https://github.com/AutonomyLab/ardrone_autonomy/wiki/AR-Drone-Parameters
+rosrun ardrone_autonomy ardrone_driver _realtime_navdata:=True _navdata_demo:=0
+
+ -->
+
+</launch>

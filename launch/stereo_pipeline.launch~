@@ -1,0 +1,143 @@
+<launch>
+	<arg name="cam_left" value="raspicam_left"/>
+	<arg name="cam_right" value="raspicam_right"/>
+	<arg name="image_width" value="900"/>
+	<arg name="image_height" value="506"/>
+	<arg name="image_quality" value="100"/>
+	<arg name="image_framerate" value="15"/>
+	<arg name="stereo_topic" value="stereo"/>
+	<arg name="subnet" value="10.0.1"/>
+	
+	
+	<!-- machine name="$(arg cam_left)" address="$(arg subnet).10" env-loader="/opt/ros/groovy/env.sh" default="never" user="pi" password="raspberry"/>
+	<machine name="$(arg cam_right)" address="$(arg subnet).11" env-loader="/opt/ros/groovy/env.sh" default="never" user="pi" password="raspberry"/-->
+	
+	
+	<!--"/home/pi/ros_setup.bash"-->
+	<!--node name="$(arg cam_left)" machine="$(arg cam_left)" pkg="raspicam" type="raspicam_node"
+			args="_width:=$(arg image_width) _height:=$(arg image_height) _quality:=$(arg image_quality) _framerate:=$(arg image_framerate)" output="screen">
+		<env name="ROS_PACKAGE_PATH" value="/home/pi/ros/stacks:/home/pi/ros/workspace:/opt/ros/groovy/stacks:/opt/ros/groovy/share"/>
+		<env name="ROS_ROOT" value="/opt/ros/hydro/share/ros"/>
+    	<env name="ROS_HOSTNAME" value="$(arg subnet).10" />
+		<env name="ROS_IP" value="$(arg subnet).10" />
+		<remap from="/raspicam_node"			to="$(arg stereo_topic)/left"/>
+		<remap from="/camera/image/compressed"	to="$(arg stereo_topic)/left/image/compressed"/>
+		<remap from="/camera/camera_info"		to="$(arg stereo_topic)/left/camera_info"/>
+		<remap from="/set_camera_info"			to="$(arg stereo_topic)/left/set_camera_info"/>
+		<remap from="/camera/start_capture"		to="$(arg stereo_topic)/left/start_capture"/>
+		<remap from="/camera/stop_capture"		to="$(arg stereo_topic)/left/stop_capture"/>
+	</node>
+	
+	
+	<node name="$(arg cam_right)" machine="$(arg cam_right)" pkg="raspicam" type="raspicam_node" 
+			args="_width:=$(arg image_width) _height:=$(arg image_height) _quality:=$(arg image_quality) _framerate:=$(arg image_framerate)" output="screen">
+		<env name="ROS_PACKAGE_PATH" value="/home/pi/ros/stacks:/home/pi/ros/workspace:/opt/ros/groovy/stacks:/opt/ros/groovy/share"/>
+		<env name="ROS_ROOT" value="/opt/ros/hydro/share/ros"/>
+    	<env name="ROS_HOSTNAME" value="$(arg subnet).11" />
+ 		<env name="ROS_IP" value="$(arg subnet).11" />
+	   	<remap from="/raspicam_node"			to="$(arg stereo_topic)/right"/>
+		<remap from="/camera/image/compressed"	to="$(arg stereo_topic)/right/image/compressed"/>
+		<remap from="/camera/camera_info"		to="$(arg stereo_topic)/right/camera_info"/>
+		<remap from="/set_camera_info"			to="$(arg stereo_topic)/right/set_camera_info"/>
+		<remap from="/camera/start_capture"		to="$(arg stereo_topic)/right/start_capture"/>
+		<remap from="/camera/stop_capture"		to="$(arg stereo_topic)/right/stop_capture"/>
+	</node-->
+
+	<node name="left_cam_decompress"
+			pkg="image_transport" type="republish"
+			output="screen" clear_params="true"
+			args="compressed in:=$(arg stereo_topic)/left/image _image_transport:=compressed raw out:=$(arg stereo_topic)/left/image_raw">	
+			<!--env name="ROS_NAMESPACE" value="$(arg stereo_topic)"/-->	
+	</node>
+
+	<node name="right_cam_decompress"
+			pkg="image_transport" type="republish"
+			output="screen"	clear_params="true" 
+			args="compressed in:=$(arg stereo_topic)/right/image _image_transport:=compressed raw out:=$(arg stereo_topic)/right/image_raw">
+			<!--env name="ROS_NAMESPACE" value="$(arg stereo_topic)"/-->
+	</node>
+
+	<node name="static_tf__odom_baselink"
+				pkg="tf" type="static_transform_publisher"
+				output="screen"
+				args="0 0 0 0 0 0 odom base_link 20">
+	</node>
+	
+	<node name="static_tf__baselink_camera"
+				pkg="tf" type="static_transform_publisher"
+				output="screen"
+				args="0 0 0 0 0 0 base_link camera 20"> <!---1.57079632679-->
+	</node>
+	
+		<!--node name="static_tf__base_stabilized_camera"
+				pkg="tf" type="static_transform_publisher"
+				output="screen"
+				args="0 0 0 0 0 0 camera base_stabilized 20"--> <!---1.57079632679-->
+	<!--/node-->
+	
+		<!--node name="static_tf__base_link_scanmatcher"
+				pkg="tf" type="static_transform_publisher"
+				output="screen"
+				args="0 0 0 0 0 0 base_link scanmatcher_frame 20"--> <!---1.57079632679-->
+	<!--/node-->
+
+	<node name="static_tf__basefoot_map"
+				pkg="tf" type="static_transform_publisher"
+				output="screen"
+				args="0 0 0 0 0 0 base_footprint map 20"><!--base_footpring-->
+	</node>
+	
+	<!--node name="stereo_image_proc_front"
+			pkg="stereo_image_proc" type="stereo_image_proc" output="screen"
+			clear_params="true">
+				<env name="ROS_NAMESPACE" value="$(arg stereo_topic)"/>
+	
+		<param name="_queue_size"       value="3"/>
+		<param name="_approximate_sync" value="true"/>
+	</node-->
+
+	<!--node name="visual_odometry__viso2"
+			pkg="viso2_ros" type="stereo_odometer" output="screen" >
+		<remap from="image" to="image_rect"/>
+		<param name="~apporoximate_sync" value="true"/>
+		<param name="~ransac_iters" value="2500"/>
+		<param name="~ref_frame_motion_threshold" value="12"/>
+	</node-->	
+	
+	<!--node name="" pkg="" type="" output="" clear_params="">
+		<remap from="" to=""/>
+		<param name="" value=""/>
+	</node-->
+	<!--
+	command line:
+	
+	rosrun image_transport republish compressed in:=/stereo/left/image _image_transport:=compressed raw out:=/stereo/left/image_raw &
+	rosrun image_transport republish compressed in:=/stereo/right/image _image_transport:=compressed raw out:=/stereo/right/image_raw &
+	export ROS_NAMESPACE=stereo; rosrun stereo_image_proc stereo_image_proc _queue_size:=4 _approximate_sync:=true
+
+	rosrun tf static_transform_publisher 0 0 0 0 0 0 odom base_link 20
+	rosrun tf static_transform_publisher 0 0 0 0 0 0 base_link camera 20
+	
+	
+	-->
+	
+	
+	
+	
+	<!--node pkg="nodelet" type="nodelet" name="manager" output="screen" respawn="true" args="manager"/-->
+	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~pointcloud to laserscan -->
+
+	<!-- throttling -->
+	<!--node pkg="nodelet" type="nodelet" name="stereo_pointcloud_throttle" args="load pointcloud_to_laserscan/CloudThrottle manager">
+		<param name="max_rate" value="15"/>
+		<remap from="cloud_in" to="/stereo/points2"/>
+		<remap from="cloud_out" to="/stereo/points2_throttled"/>
+	</node-->
+
+	<!-- fake laser -->
+	<!--node pkg="nodelet" type="nodelet" name="stereo_laser" args="load pointcloud_to_laserscan/CloudToScan manager">
+		<param name="output_frame_id" value="/camera"/>
+		<remap from="cloud" to="/stereo/points2_throttled"/-->
+		<!--remap from="scan"  to="/stereo/laserscan"/-->
+	<!--/node-->
+</launch>
