@@ -6,13 +6,5 @@
 		<remap from="cloud_in" to="/stereo/points2"/>
 		<remap from="cloud_out" to="/rgb/cloud"/>
 	</node>
-
-	<!-- fake laser -->
-	<node pkg="nodelet" type="nodelet" name="stereo_laser" args="load pointcloud_to_laserscan/CloudToScan manager">
-		<param name="output_frame_id" value="/base_link"/>
-		<remap from="cloud" to="/stereo/points2_throttled"/>
-		<param name="min_height" value="-10"/>
-		<param name="max_height" value="10"/>
-		<!--remap from="scan"  to="/stereo/laserscan"/-->
-	</node>
-</launch>
+	
+<launch/>

@@ -8,7 +8,7 @@
 			clear_params="true">
 
 	
-
+	
 		<param name="approximate_sync"			value="true"/>
 		<param name="correlation_window_size"	value="37"/> <!-- formerly 70-->
 		<param name="disparity_range"       	value="64"/>
@@ -22,4 +22,7 @@
 		<param name="uniqueness_ratio" 			value="12.0"/> <!-- formerly 47.0 -->
 	</node>
 	</group>
+	<node name="disp2depth" pkg ="depth_image_proc" type="disp2depthNode" output="screen">
+	</node>
+	
 </launch>
